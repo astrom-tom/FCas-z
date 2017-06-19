@@ -8,8 +8,7 @@ COSMO_at_z --help
 
 This will give you all the options you can give to the code.
 
-**WARNIGN** This code does not include non-flat Universe -->  Omega_k=0
-
+**WARNING** This code does not include non-flat Universe -->  Omega_k=0
 
 SPARTAN_COSMO had been tested againt online comological calulators, in particular http://cosmocalc.icrar.org/ .
 
