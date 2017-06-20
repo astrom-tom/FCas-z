@@ -1,0 +1,77 @@
+#!/usr/bin/python
+#####
+# R. Thomas at UV/LAM
+# to compile the cython code: python setup.py build_ext --inplace 
+# Then you can run the code
+# date: 14/06/16
+#####
+
+
+#Python lib
+import numpy
+
+#Personal Lib
+from cosmospartan.cosmo  import Cosmology
+
+#Lib for options argument
+import argparse
+
+
+#defining the options to be entered
+parser = argparse.ArgumentParser(description="%prog, version 1.0, Romain Thomas, the.spartan.proj@gmail.com, 2017")
+parser.add_argument("-H", "--Hubble_constant", help="Hubble constant (in km/s/Mpc), default is Ho=70 km/s/Mpc",type=float,default=70.0)
+parser.add_argument("-E", "--Dark_Energy", help="Dark Energy parameter, default is 0.73. Must be between 0 and 1", type=float, default=0.73)
+parser.add_argument("-M", "--matter", help="Matter parameter, default is 0.27. Must be between 0 and 1", type=float, default=0.27)
+parser.add_argument("-z", "--redshift", help="Redshit at which you want to compute the cosmological properties", type=float,default=2.0)
+
+print(parser.parse_args())
+options = parser.parse_args()
+
+#retieve the options
+dic=vars(options)
+Omega_L=dic['Dark_Energy'] 
+Omega_M=dic['matter']
+
+HO=dic['Hubble_constant']
+z=dic['redshift']
+
+#extract the cosmological properties
+print ('\n')
+print ('#########################################')
+print ('######## Cosmological properties ########')
+print ('#########################################')
+print ('\n')
+
+cos=Cosmology(HO, Omega_M, Omega_L, 0)
+print ('----Cosmological parameters----\n')
+print ('Ho = %s km/s/Mpc'%HO)
+print ('OmegaL = %s'%Omega_L)
+print ('OmegaM = %s'%Omega_M)
+
+print ('Hubble time (1/Ho) = %1.2e sec'% cos.Hubbletime() )
+print ('Hubble distance (c/Ho) = %1.2e m ; %1.2f Mpc'%(cos.Hubbledistance(), \
+        cos.Hubbledistance()*3.24e-23))
+print ('(with c = %1.8e m/s)'%(cos.c) )
+
+print ('\n----Cosmological properties----\n')
+print ('The cosmological properties are computed at z=%s\n'%z)
+
+
+
+H=cos.H(z)
+A=cos.Age_Universe(z)
+Lc=cos.dcE(z)
+Ll=cos.dl(z)
+La=cos.da(z)
+
+print ('Hubble parameter:    H(z=%s)=%1.3f km/s/Mpc'%(z,H))
+print ('Age of the universe: A(z=%s)=%1.3f Gyr'%(z,A))
+print ('Comoving distance:   L_com(z=%s)=%1.3f Mpc'%(z,Lc))
+print ('Luminosity distance: L_Lum(z=%s)=%1.3f Mpc'%(z,Ll))
+print ('Angular distance:    L_ang(z=%s)=%1.3f Mpc'%(z,La))
+print ('Comoving volume:     V_com(z=%s)=%1.3f Gpc^3\n'%(z,4./3.*numpy.pi*Lc*Lc*Lc/1000000000))
+print ('#########################################')
+print ('#########################################')
+print ('#########################################\n')
+
+
